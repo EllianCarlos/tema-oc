@@ -1,0 +1,3 @@
+[submodule "src/uDGP"]
+	path = src/uDGP
+	url = https://github.com/petrabartmeyer/uDGP
