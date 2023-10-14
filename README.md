@@ -5,7 +5,7 @@
 
 # TODO
 
-- [] code
-- [] Improve this todo
-- [] refer bibliography and petrabartmeyer
+- [  ] code
+- [  ] Improve this todo
+- [  ] refer bibliography and petrabartmeyer
 
