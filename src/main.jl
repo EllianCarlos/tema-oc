@@ -1,3 +1,5 @@
+using MyPackage
+
 using Formatting
 # include(format(FormatExpr("{1:s}/uDGP/instance_generator.jl"), @__DIR__))
 # calculation()
@@ -27,4 +29,6 @@ function readInstanceFile(path)
   end
 end
 
-readInstanceFile(instance_path)
+#readInstanceFile(instance_path)
+
+print(DistanceFrequencyToDistance([DistanceFrequency(5, 1.34)]))
