@@ -1,0 +1,6 @@
+[submodule "uDGP"]
+	path = uDGP
+	url = https://github.com/petrabartmeyer/uDGP
+[submodule "mdjeep"]
+	path = mdjeep
+	url = git@github.com:mucherino/mdjeep.git
