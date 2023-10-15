@@ -7,3 +7,5 @@ email: elliancarlos at gmail.com
 
 - visualizer: molstar.org
 - protein database: rcbs.org
+- mdjeep: https://github.com/mucherino/mdjeep
+- uDGP Julia: https://github.com/petrabartmeyer/uDGP

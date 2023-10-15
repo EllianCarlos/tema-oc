@@ -1,27 +1,28 @@
+# From the PDB
 DATABASE_DIR=./db
 DATABASE_BINARIES_DIR=./db/bin
 DATABASE_DOWNLOAD_LIST=$(DATABASE_DIR)/list_file.txt
 DATABASE_DOWNLOAD_SCRIPT=$(DATABASE_DIR)/pdb_batch_download.sh
 
 # Name
-
 PROJECT = MDGP
 
 VERSION = 0.1
 
-# source code prefix
-
-PREFIX=.
-DIST=dist
-SRC_FOLDER=src
+# source code folder
+SRC_FOLDER=./src
 
 # Objects
 
 OBJECTS = main.o
+DATA_FOLDER = $(SRC_FOLDER)/data
+CONVERTER_FOLDER = $(DATA_FOLDER)/converter
+DATA_FILES = $(DATA_FOLDER)/Distance.cpp $(DATA_FOLDER)/DistanceFrequency.cpp $(CONVERTER_FOLDER)/DistanceFrequencyToDistance.cpp $(CONVERTER_FOLDER)/LineToDistanceFrequency.cpp $(DATA_FOLDER)/Point.cpp 
+PARSER_FILES = $(SRC_FOLDER)/parser/FileParser.cpp 
 
 BIN = main
 
-CPP_FLAGS = -march=native -O3 -Wall
+CPP_FLAGS = -march=native -O3 -Wall -lm
 C_FLAGS = -I.
 LD_FLAGS =
 CC = g++ # gcc will not give access to c++ libraries
@@ -47,12 +48,12 @@ all:
 main: main.o
 	./main.o
 
-# ./src/data/converter/LineToDistanceFrequency.cpp
-
-main.o: ./src/data/Distance.cpp ./src/data/DistanceFrequency.cpp ./src/data/converter/DistanceFrequencyToDistance.cpp ./src/parser/FileParser.cpp ./src/main.cpp
-	g++ -march=native -O3 -I ./src/headers -Wall  $^ -o $@
+main.o: $(DATA_FILES) $(PARSER_FILES) $(SRC_FOLDER)/main.cpp 
+	@echo $^
+	g++ $(CPP_FLAGS) -I ./src/headers  $^ -o $@
 
 simple-main: ./src/data/Distance.cpp ./src/simple-main.cpp
+	@echo $^
 	g++ -march=native -O3 -I ./src/headers/ -Wall $^ -o simple-main.o 
 
 clean:
