@@ -3,7 +3,37 @@ DATABASE_BINARIES_DIR=./db/bin
 DATABASE_DOWNLOAD_LIST=$(DATABASE_DIR)/list_file.txt
 DATABASE_DOWNLOAD_SCRIPT=$(DATABASE_DIR)/pdb_batch_download.sh
 
-.PHONY: clean download-db unpack-download clean-julia-cache setup-julia
+# Name
+
+PROJECT = MDGP
+
+VERSION = 0.1
+
+# source code prefix
+
+PREFIX=.
+DIST=dist
+SRC_FOLDER=src
+
+# Objects
+
+OBJECTS = main.o
+
+BIN = main
+
+CPP_FLAGS = -march=native -O3 -Wall
+C_FLAGS = -I.
+LD_FLAGS =
+CC = g++ # gcc will not give access to c++ libraries
+MAKE = make
+
+# Other files to be distributed
+
+EXTRADIST = 
+
+# PHONY
+
+.PHONY: clean download-db unpack-download
 
 download-db:
 	sh $(DATABASE_DOWNLOAD_SCRIPT) -f $(DATABASE_DOWNLOAD_LIST) -p -o $(DATABASE_BINARIES_DIR)
@@ -11,11 +41,19 @@ download-db:
 unpack-download: 
 	gzip -d ./$(DATABASE_BINARIES_DIR)/*.gz	
 
-clean-julia-cache:
-	rm -rf ~/.julia/packages/MDGP ~/.julia/compiled/v1.9/MDGP ~/.julia/packages/MyPackage ~/.julia/compiled/v1.9/MyPackage
+all:
+	@echo "TODO"
 
-setup-julia:
-	julia setup.jl
+main: main.o
+	./main.o
 
-julia:
-	make clean-julia-cache && make setup-julia
+# ./src/data/converter/LineToDistanceFrequency.cpp
+
+main.o: ./src/data/Distance.cpp ./src/data/DistanceFrequency.cpp ./src/data/converter/DistanceFrequencyToDistance.cpp ./src/parser/FileParser.cpp ./src/main.cpp
+	g++ -march=native -O3 -I ./src/headers -Wall  $^ -o $@
+
+simple-main: ./src/data/Distance.cpp ./src/simple-main.cpp
+	g++ -march=native -O3 -I ./src/headers/ -Wall $^ -o simple-main.o 
+
+clean:
+	rm -f $(OBJECTS) $(BIN) 
