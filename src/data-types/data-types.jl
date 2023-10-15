@@ -1,4 +1,4 @@
-module DataTypes
+module MyPackage
   include("Distance.jl")
   include("DistanceFrequency.jl")
 

@@ -1,6 +1,4 @@
-module converters
-
-using DataTypes
+module MyPackage
 
 function DistanceFrequencyToDistance(frequencyDistanceList::DistanceFrequency[])::Distance[]
   distanceArray::Distance[] = []
