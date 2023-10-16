@@ -26,3 +26,8 @@ std::string MyPoint::Print()
 
   return pointString;
 }
+
+MyPoint MyPoint::clone()
+{
+  return MyPoint(this->x, this->y, this->z);
+}

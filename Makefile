@@ -48,8 +48,10 @@ all:
 main: main.o
 	./main.o
 
-main.o: $(DATA_FILES) $(PARSER_FILES) $(SRC_FOLDER)/main.cpp 
-	@echo $^
+main-debug:$(DATA_FILES) $(PARSER_FILES) $(SRC_FOLDER)/main.cpp
+	g++ $(CPP_FLAGS) -I ./src/headers -g -fdiagnostics-color=always $^ -o $@
+
+main.o: $(DATA_FILES) $(PARSER_FILES) $(SRC_FOLDER)/main.cpp
 	g++ $(CPP_FLAGS) -I ./src/headers  $^ -o $@
 
 simple-main: ./src/data/Distance.cpp ./src/simple-main.cpp

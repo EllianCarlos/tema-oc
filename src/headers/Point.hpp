@@ -1,14 +1,18 @@
 #ifndef __POINT
 #define __POINT
 
-class MyPoint {
+#include <string>
+
+class MyPoint
+{
 public:
   double x;
   double y;
   double z;
-  MyPoint(double xx, double yy, double zz);
-  double GetDistance(MyPoint* p2);
+  MyPoint(double x, double y, double z);
+  double GetDistance(MyPoint *p2);
   std::string Print();
+  MyPoint clone();
 };
 
 #endif // __POINT

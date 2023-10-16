@@ -9,3 +9,4 @@ email: elliancarlos at gmail.com
 - protein database: rcbs.org
 - mdjeep: https://github.com/mucherino/mdjeep
 - uDGP Julia: https://github.com/petrabartmeyer/uDGP
+- protein viewer inside vscode: ArianJamasb.protein-viewer

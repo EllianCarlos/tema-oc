@@ -1,0 +1,17 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "Build: uDGP Debug",
+      "command": "echo 'Build debug by hand, vscode sucks'",
+      "args": [],
+      "options": {
+        "cwd": "${fileDirname}"
+      },
+      "problemMatcher": ["$gcc"],
+      "group": "build",
+      "detail": "usando makefile"
+    }
+  ]
+}
