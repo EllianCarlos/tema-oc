@@ -1,5 +1,6 @@
 db/bin/**
 !db/bin
 main.o
+main
 main-debug
 filename.txt

@@ -10,29 +10,33 @@
 
 using namespace std;
 
-double distancePoints(MyPoint *p1, MyPoint *p2)
-{
-  return p1->GetDistance(p2);
+void printSolution(vector<MyPoint> solution) {
+  for (auto it = solution.begin(); it != solution.end(); ++it)
+    cout << it->x << " " << it->y << " " << it->z << "\n";
+  cout << endl;
 }
 
-vector<MyPoint> generateRandomValidSolution(vector<Distance> dist, int nOfPoints)
-{
+vector<MyPoint> generateRandomValidSolution(vector<Distance> dist,
+                                            int nOfPoints) {
   // TODO improve
   // TODO add validation for number of points
   vector<MyPoint> randomSolution;
 
   MyPoint firstPoint(0, 0, 0);
-  MyPoint secondPoint(0, 0, dist.at(1).getDistance());
+  MyPoint secondPoint(dist.at(1).getDistance(), 0, 0);
   int nOfCreatedPoints = 2;
 
   randomSolution.push_back(firstPoint);
   randomSolution.push_back(secondPoint);
 
-  for (int i = 1; i < (int)dist.size() && nOfCreatedPoints < nOfPoints; ++i)
-  {
+  for (int i = 1; i < (int)dist.size() && nOfCreatedPoints < nOfPoints; ++i) {
     Distance actualDistance = dist.at(i);
-    double sqrtOfDistByThree = sqrt(actualDistance.getDistance()) / ((double)3.0);
-    MyPoint otherPoint(sqrtOfDistByThree, sqrtOfDistByThree, sqrtOfDistByThree);
+    double sqrtOfDistByThree =
+        sqrt(actualDistance.getDistance()) / ((double)3.0);
+    double randomFactor = rand() / double(RAND_MAX);
+    MyPoint otherPoint(sqrtOfDistByThree * randomFactor,
+                       sqrtOfDistByThree * (1 - randomFactor),
+                       sqrtOfDistByThree * (randomFactor * randomFactor));
     randomSolution.push_back(otherPoint);
     ++nOfCreatedPoints;
   }
@@ -40,54 +44,27 @@ vector<MyPoint> generateRandomValidSolution(vector<Distance> dist, int nOfPoints
   return randomSolution;
 }
 
-vector<MyPoint> generateRandomSolution(int nOfPoints)
-{
-  vector<MyPoint> randomSolution;
-  const long max_rand = 1000000L;
-  randomSolution.push_back(MyPoint(0, 0, 0));
-
-  for (int i = 1; i < nOfPoints; ++i)
-  {
-    double randomX = 3 * (random() % max_rand) / max_rand;
-    double randomY = 3 * (random() % max_rand) / max_rand;
-    double randomZ = 3 * (random() % max_rand) / max_rand;
-    randomSolution.push_back(MyPoint(randomX, randomY, randomZ));
-  }
-
-  return randomSolution;
-}
-
-map<double, int> distanceFrequencyArrayToMap(vector<DistanceFrequency> *distFreq)
-{
-  map<double, int> distanceFrequencyMap;
-
-  for (auto it = distFreq->begin(); it != distFreq->end(); ++it)
-    distanceFrequencyMap.emplace(make_pair(it->getDistance(), it->getFrequency()));
-
-  return distanceFrequencyMap;
-}
-
-double calculateEntropyOfSolution(vector<MyPoint> *solution, vector<Distance> *distances)
-{
+double calculateEntropyOfSolution(vector<MyPoint> *solution,
+                                  vector<Distance> *distances) {
   double entropy = 0;
-  for (auto firstPoint = solution->begin(); firstPoint != solution->end(); ++firstPoint)
-    for (auto secondPoint = solution->begin(); secondPoint != solution->end(); ++secondPoint)
-    {
-      if (firstPoint != secondPoint)
-      {
+  for (auto firstPoint = solution->begin(); firstPoint != solution->end();
+       ++firstPoint)
+    for (auto secondPoint = solution->begin(); secondPoint != solution->end();
+         ++secondPoint)
+      if (firstPoint != secondPoint) {
         MyPoint clonedPoint = secondPoint->clone();
-        entropy -= firstPoint->GetDistance(&clonedPoint);
+        entropy -= abs(firstPoint->GetDistance(&clonedPoint));
       }
-    }
 
-  for (auto distance = distances->begin(); distance != distances->end(); ++distance)
-    entropy += distance->getDistance();
+  for (auto distance = distances->begin(); distance != distances->end();
+       ++distance)
+    entropy += abs(distance->getDistance());
 
   return abs(entropy);
 }
 
-vector<MyPoint> generateNeighborSolution(vector<MyPoint> *solution, vector<DistanceFrequency> *distFreq)
-{
+vector<MyPoint> generateNeighborSolution(vector<MyPoint> *solution,
+                                         vector<DistanceFrequency> *distFreq) {
   // Posible operations:
   // - swap
   // - add a very small quantity to a solution
@@ -95,31 +72,30 @@ vector<MyPoint> generateNeighborSolution(vector<MyPoint> *solution, vector<Dista
   vector<MyPoint> neighborSolution;
 
   const double half = 0.50;
-  const double pertubanceFactor = 0.0025;
+  const double pertubanceFactor = 0.25;
 
   // Generate pertubance:
   for (int i = 0; i < (int)solution->size(); ++i)
-    neighborSolution.push_back(MyPoint(solution->at(i).x, solution->at(i).y, solution->at(i).z));
+    neighborSolution.push_back(
+        MyPoint(solution->at(i).x, solution->at(i).y, solution->at(i).z));
 
-  for (int i = (int)solution->size() - 1; i > 0; --i)
-  {
-    for (int i = 0; i < 3; ++i)
-    {
+  for (int i = (int)solution->size() - 1; i > 0; --i) {
+    for (int j = 0; j < 3; ++j) {
       auto randomValue = rand() / double(RAND_MAX);
-      
-      if (i == 0)
-      {
-        neighborSolution[i].x = neighborSolution[i].x * (1 + pertubanceFactor * (randomValue > half));
+
+      if (j == 0) {
+        neighborSolution[i].x = neighborSolution[i].x *
+                                (1 + pertubanceFactor * (randomValue > half));
       }
 
-      if (i == 1)
-      {
-        neighborSolution[i].y = neighborSolution[i].y * (1 + pertubanceFactor * (randomValue > half));
+      if (j == 1) {
+        neighborSolution[i].y = neighborSolution[i].y *
+                                (1 + pertubanceFactor * (randomValue > half));
       }
 
-      if (i == 2)
-      {
-        neighborSolution[i].z = neighborSolution[i].z * (1 + pertubanceFactor * (randomValue > half));
+      if (j == 2) {
+        neighborSolution[i].z = neighborSolution[i].z *
+                                (1 + pertubanceFactor * (randomValue > half));
       }
     }
   }
@@ -127,23 +103,16 @@ vector<MyPoint> generateNeighborSolution(vector<MyPoint> *solution, vector<Dista
   return neighborSolution;
 }
 
-double generateInitialTemperature(
-    double beta,
-    double gamma,
-    int maxIterations,
-    double temperature,
-    vector<MyPoint> solution,
-    vector<Distance> *dists,
-    vector<DistanceFrequency> *distFreq,
-    vector<vector<MyPoint>> *acceptedSolutions)
-{
+double generateInitialTemperature(double beta, double gamma, int maxIterations,
+                                  double temperature, vector<MyPoint> solution,
+                                  vector<Distance> *dists,
+                                  vector<DistanceFrequency> *distFreq,
+                                  vector<vector<MyPoint>> *acceptedSolutions) {
   bool keep = true;
   double temp = temperature;
 
-  while (keep)
-  {
-    for (int i = 0; i < maxIterations; ++i)
-    {
+  while (keep) {
+    for (int i = 0; i < maxIterations; ++i) {
       vector<MyPoint> neighbor = generateNeighborSolution(&solution, distFreq);
 
       double neighborEntropy = calculateEntropyOfSolution(&neighbor, dists);
@@ -151,23 +120,17 @@ double generateInitialTemperature(
 
       double deltaEntropy = neighborEntropy - solutionEntropy;
 
-      if (deltaEntropy < 0)
-      {
+      if (deltaEntropy < 0) {
         acceptedSolutions->push_back(neighbor);
-      }
-      else
-      {
+      } else {
         auto randomValue = rand() / double(RAND_MAX);
         if (randomValue < exp(deltaEntropy / temperature))
           acceptedSolutions->push_back(neighbor);
       }
     }
-    if (acceptedSolutions->size() > gamma * maxIterations)
-    {
+    if (acceptedSolutions->size() > gamma * maxIterations) {
       keep = false;
-    }
-    else
-    {
+    } else {
       temperature = beta * temperature;
     }
   }
@@ -175,13 +138,13 @@ double generateInitialTemperature(
   return temp;
 }
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
   // Just in case I need random
   srandom(time(NULL));
 
   // Open file and save the lines to a vector of string
-  const vector<string> lineArray = FileParser::readFileLines("uDGP/Instance_5/Instances/distance_frequency_size5_instance1.dat");
+  const vector<string> lineArray = FileParser::readFileLines(
+      "uDGP/Instance_5/Instances/distance_frequency_size5_instance1.dat");
 
   // Convert file lines to distance frequency objects
   vector<DistanceFrequency> distanceFrequencyList;
@@ -191,7 +154,8 @@ int main(int argc, char *argv[])
       distanceFrequencyList.push_back(LineToDistanceFrequency::convert(*it));
 
   // Convert distance frequencys to distances
-  vector<Distance> distanceList = DistanceFrequencyToDistance::convertArray(distanceFrequencyList);
+  vector<Distance> distanceList =
+      DistanceFrequencyToDistance::convertArray(distanceFrequencyList);
 
   // Running MD-jeep?
 
@@ -205,49 +169,56 @@ int main(int argc, char *argv[])
 
   // RANDOM SOLUTION
 
-  int nOfPoints = (int)(sqrt(distanceList.size()*8 + 1.0) + 1.0) / ((double)2.0);
-  cout << "#Points " << nOfPoints << endl;
-  vector<MyPoint> randomSolution = generateRandomValidSolution(distanceList, nOfPoints);
+  int nOfPoints =
+      (int)(sqrt(distanceList.size() * 8 + 1.0) + 1.0) / ((double)2.0);
+  vector<MyPoint> randomSolution =
+      generateRandomValidSolution(distanceList, nOfPoints);
 
-  const auto maxIterations = 20000000;
+  const auto maxIterations = 20000;
 
   vector<MyPoint> bestSolution = randomSolution;
   long iterations = 0;
   vector<vector<MyPoint>> eliteSet;
-  double temperature = generateInitialTemperature(beta, gamma, 1000, maxIterations, bestSolution, &distanceList, &distanceFrequencyList, &eliteSet);
+
+  double temperature = generateInitialTemperature(
+      beta, gamma, 99999, maxIterations, bestSolution, &distanceList,
+      &distanceFrequencyList, &eliteSet);
   vector<MyPoint> workingSolution = bestSolution;
 
-  while (temperature > 0 && iterations < maxIterations)
-  {
-    vector<MyPoint> neighbor = generateNeighborSolution(&workingSolution, &distanceFrequencyList);
+  const double tol = 1e-20;
 
-    double neighborEntropy = calculateEntropyOfSolution(&neighbor, &distanceList);
-    double solutionEntropy = calculateEntropyOfSolution(&workingSolution, &distanceList);
+  while (temperature > tol && iterations < maxIterations) {
+    vector<MyPoint> neighbor =
+        generateNeighborSolution(&workingSolution, &distanceFrequencyList);
+
+    double neighborEntropy =
+        calculateEntropyOfSolution(&neighbor, &distanceList);
+    double solutionEntropy =
+        calculateEntropyOfSolution(&workingSolution, &distanceList);
 
     double deltaEntropy = neighborEntropy - solutionEntropy;
 
-    if (deltaEntropy < 0)
-    {
-      double bestSolutionEntropy = calculateEntropyOfSolution(&bestSolution, &distanceList);
+    if (deltaEntropy < 0) {
+      double bestSolutionEntropy =
+          calculateEntropyOfSolution(&bestSolution, &distanceList);
 
-      if (bestSolutionEntropy > neighborEntropy)
-      {
+      if (bestSolutionEntropy > neighborEntropy) {
         bestSolution = neighbor;
       }
-    }
-    else
-    {
+    } else {
       auto randomValue = rand() / double(RAND_MAX);
       if (randomValue < exp(deltaEntropy / temperature))
         workingSolution = neighbor;
     }
+
+    cout << "before print" << endl;
+
+    printSolution(bestSolution);
+    cout << "Current temperature: " << temperature << endl;
+
     temperature = temperature * alpha;
     ++iterations;
   }
-
-  for (auto it = bestSolution.begin(); it != bestSolution.end(); ++it)
-    cout << it->x << " " << it->y << " " << it->z << "\n";
-  cout << endl;
 
   return 0;
 }

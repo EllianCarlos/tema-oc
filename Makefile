@@ -17,7 +17,7 @@ SRC_FOLDER=./src
 OBJECTS = main.o
 DATA_FOLDER = $(SRC_FOLDER)/data
 CONVERTER_FOLDER = $(DATA_FOLDER)/converter
-DATA_FILES = $(DATA_FOLDER)/Distance.cpp $(DATA_FOLDER)/DistanceFrequency.cpp $(CONVERTER_FOLDER)/DistanceFrequencyToDistance.cpp $(CONVERTER_FOLDER)/LineToDistanceFrequency.cpp $(DATA_FOLDER)/Point.cpp 
+DATA_FILES = $(DATA_FOLDER)/Distance.cpp $(DATA_FOLDER)/DistanceFrequency.cpp $(CONVERTER_FOLDER)/DistanceFrequencyToDistance.cpp $(CONVERTER_FOLDER)/LineToDistanceFrequency.cpp $(DATA_FOLDER)/Point.cpp
 PARSER_FILES = $(SRC_FOLDER)/parser/FileParser.cpp 
 
 BIN = main
@@ -53,6 +53,12 @@ main-debug:$(DATA_FILES) $(PARSER_FILES) $(SRC_FOLDER)/main.cpp
 
 main.o: $(DATA_FILES) $(PARSER_FILES) $(SRC_FOLDER)/main.cpp
 	g++ $(CPP_FLAGS) -I ./src/headers  $^ -o $@
+
+udgp: udgp.o
+	./udgp.o
+
+udgp.o: $(DATA_FILES) $(PARSER_FILES) $(SRC_FOLDER)/main-udgp.cpp
+	g++ $(CPP_FLAGS) -I ./src/headers -I /usr/include/eigen3 $(pkg-config --cflags eigen3) $^ -o $@
 
 simple-main: ./src/data/Distance.cpp ./src/simple-main.cpp
 	@echo $^
