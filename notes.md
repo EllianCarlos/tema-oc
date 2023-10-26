@@ -10,3 +10,7 @@ email: elliancarlos at gmail.com
 - mdjeep: https://github.com/mucherino/mdjeep
 - uDGP Julia: https://github.com/petrabartmeyer/uDGP
 - protein viewer inside vscode: ArianJamasb.protein-viewer
+- https://github.com/Distance-Geometry/.github/commits?author=fausto-mpj
+- https://github.com/geekysuavo/ibp-ng
+- https://github.com/fausto-mpj?tab=repositories
+- https://github.com/michaelsouza/lsbuild
