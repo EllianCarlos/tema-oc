@@ -14,3 +14,5 @@ email: elliancarlos at gmail.com
 - https://github.com/geekysuavo/ibp-ng
 - https://github.com/fausto-mpj?tab=repositories
 - https://github.com/michaelsouza/lsbuild
+- https://github.com/azswartz/Grovers-MDGP/blob/master/Complete_Code.ipynb
+- https://github.com/michaelsouza/dmdgp-mlm
